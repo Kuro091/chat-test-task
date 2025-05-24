@@ -1,12 +1,13 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatBox } from "./ChatBox";
 import { ChatMessageType } from "@/types/chat";
 
 export default function ChatInterface() {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessageType[]>([
     {
       isAI: true,
@@ -15,6 +16,14 @@ export default function ChatInterface() {
       sender: "Vanilla AI",
     },
   ]);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const handleSend = (message: string) => {
     setMessages((prev) => [
@@ -28,25 +37,33 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col items-stretch gap-4 p-0 lg:p-8 w-full">
-      {messages.map((msg, index) => (
-        <div
-          key={index}
-          className={`flex ${msg.isAI ? "justify-start" : "justify-end"} w-full`}
-        >
-          <ChatMessage
-            isAI={msg.isAI}
-            message={msg.message}
-            sender={msg.sender}
-            onRegenerate={
-              msg.isAI ? () => console.log("Regenerate") : undefined
-            }
-            onReply={msg.isAI ? () => console.log("Reply") : undefined}
-          />
+    <div className="flex flex-col items-stretch w-full h-[500px]">
+      <div className="flex-1 overflow-y-auto">
+        <div className="flex flex-col justify-end gap-4 min-h-full">
+          {messages.map((msg, index) => (
+            <div
+              key={index}
+              className={`flex ${msg.isAI ? "justify-start" : "justify-end"} w-full`}
+            >
+              <ChatMessage
+                isAI={msg.isAI}
+                message={msg.message}
+                sender={msg.sender}
+                onRegenerate={
+                  msg.isAI ? () => console.log("Regenerate") : undefined
+                }
+                onReply={msg.isAI ? () => console.log("Reply") : undefined}
+              />
+            </div>
+          ))}
+          <div ref={messagesEndRef} />
         </div>
-      ))}
+      </div>
 
-      <ChatBox onSend={handleSend} />
+      {/* Fixed input at bottom */}
+      <div className="flex-shrink-0">
+        <ChatBox onSend={handleSend} />
+      </div>
     </div>
   );
 }

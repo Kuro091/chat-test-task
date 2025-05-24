@@ -1,11 +1,11 @@
-import ChatInterface from "@/components/chat-interface"
+import ChatInterface from "@/components/chat-interface";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50 p-4">
-      <div className="max-w-4xl mx-auto">
+    <div className="place-items-center grid bg-gray-50 p-4 min-h-screen">
+      <div className="mx-auto max-w-4xl">
         <ChatInterface />
       </div>
     </div>
-  )
+  );
 }
