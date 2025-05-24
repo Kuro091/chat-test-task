@@ -34,7 +34,7 @@ export function ChatMessage({
       <div
         className={cn(
           "flex flex-wrap justify-between items-start gap-2",
-          isAI ? "justify-start" : "justify-end",
+          isAI ? "justify-between" : "justify-end",
         )}
       >
         <div className="flex flex-wrap items-center gap-1">

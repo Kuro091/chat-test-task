@@ -10,6 +10,7 @@ import {
   AtHandleIcon,
   SlashIcon,
   SparkleIconTwo,
+  PaperPlaneIcon,
 } from "./icons";
 import { Send } from "lucide-react";
 import { ChatBoxProps } from "@/types/chat";
@@ -103,9 +104,9 @@ export function ChatBox({
             <Button
               onClick={handleSend}
               disabled={!message.trim()}
-              className="order-1 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 p-0 rounded-md w-8 h-8 shrink-0"
+              className="flex items-center gap-1 order-1 bg-[hsla(225,100%,13%,0.06)] hover:bg-[hsla(225,100%,13%,0.08)] disabled:bg-gray-300 px-3 rounded-[6px] w-8 h-8 shrink-0"
             >
-              <Send className="w-4 h-4" />
+              <PaperPlaneIcon className="w-4 h-4 text-[hsla(230,9%,13%,1)]" />
             </Button>
           </div>
         </div>
