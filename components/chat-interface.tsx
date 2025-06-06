@@ -17,7 +17,6 @@ export default function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [activeTab, setActiveTab] = useState<"chat" | "history">("chat");
 
-  // 🔴 Anti-pattern: Using useEffect for expensive calculation instead of useMemo
   const [messageCount, setMessageCount] = useState(0);
 
   useEffect(() => {

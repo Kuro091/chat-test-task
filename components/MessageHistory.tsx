@@ -60,7 +60,6 @@ export const MessageHistory: React.FC<MessageHistoryProps> = ({
   >(null);
   const [isExporting, setIsExporting] = useState(false);
 
-  // 🔴 Anti-pattern: Using useEffect for derived state instead of useMemo
   const [filteredSessions, setFilteredSessions] = useState<ChatSession[]>([]);
 
   useEffect(() => {
