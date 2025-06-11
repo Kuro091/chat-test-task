@@ -5,17 +5,28 @@ import { useState, useEffect, useRef } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { ChatBox } from "./ChatBox";
 import { MessageHistory } from "./MessageHistory";
+import { ChatAnalytics } from "./ChatAnalytics";
 import { ChatMessageType } from "@/types/chat";
 import { useMessagePersistence } from "@/hooks/useMessagePersistence";
+import { useMessageSearch } from "@/hooks/useMessageSearch";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { History, MessageCircle, Plus, AlertCircle } from "lucide-react";
+import {
+  History,
+  MessageCircle,
+  Plus,
+  AlertCircle,
+  BarChart3,
+  Search,
+} from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 export default function ChatInterface() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
-  const [activeTab, setActiveTab] = useState<"chat" | "history">("chat");
+  const [activeTab, setActiveTab] = useState<
+    "chat" | "history" | "analytics" | "search"
+  >("chat");
 
   const [messageCount, setMessageCount] = useState(0);
 
@@ -39,6 +50,15 @@ export default function ChatInterface() {
     clearAllSessions,
     exportSession,
   } = useMessagePersistence();
+
+  const {
+    searchResults,
+    isSearching,
+    searchStats,
+    executeSearch,
+    clearSearch,
+    highlightText,
+  } = useMessageSearch(sessions);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -170,11 +190,13 @@ export default function ChatInterface() {
 
       <Tabs
         value={activeTab}
-        onValueChange={(value) => setActiveTab(value as "chat" | "history")}
+        onValueChange={(value) =>
+          setActiveTab(value as "chat" | "history" | "analytics" | "search")
+        }
         className="w-full"
       >
         <div className="flex justify-between items-center mb-4">
-          <TabsList className="grid grid-cols-2 w-auto">
+          <TabsList className="grid grid-cols-4 w-auto">
             <TabsTrigger value="chat" className="flex items-center gap-2">
               <MessageCircle className="w-4 h-4" />
               Chat
@@ -182,6 +204,14 @@ export default function ChatInterface() {
             <TabsTrigger value="history" className="flex items-center gap-2">
               <History className="w-4 h-4" />
               History
+            </TabsTrigger>
+            <TabsTrigger value="analytics" className="flex items-center gap-2">
+              <BarChart3 className="w-4 h-4" />
+              Analytics
+            </TabsTrigger>
+            <TabsTrigger value="search" className="flex items-center gap-2">
+              <Search className="w-4 h-4" />
+              Search
             </TabsTrigger>
           </TabsList>
 
@@ -263,6 +293,30 @@ export default function ChatInterface() {
             onExportSession={handleExportSession}
             currentSessionId={currentSession?.id}
           />
+        </TabsContent>
+
+        <TabsContent value="analytics" className="mt-0">
+          <ChatAnalytics sessions={sessions} />
+        </TabsContent>
+
+        <TabsContent value="search" className="mt-0">
+          <div className="space-y-4">
+            <div className="py-8 text-center">
+              <Search className="mx-auto mb-3 w-12 h-12 text-gray-300" />
+              <h3 className="mb-2 font-medium text-gray-900 text-lg">
+                Advanced Search
+              </h3>
+              <p className="mb-4 text-gray-500">
+                Search through all your conversations with advanced filters
+              </p>
+              <p className="text-muted-foreground text-sm">
+                Found {searchStats.totalResults} results in{" "}
+                {searchStats.searchTime}ms
+                {searchResults.length > 0 &&
+                  ` across ${searchStats.sessionsSearched} sessions`}
+              </p>
+            </div>
+          </div>
         </TabsContent>
       </Tabs>
     </div>
